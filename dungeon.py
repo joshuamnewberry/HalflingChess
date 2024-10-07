@@ -15,7 +15,7 @@ class Dungeon:
         self.__width = width
         self.__board:List[List[None|Character]] = [[0 for i in range(height)] for j in range(width)]
         self.__player:Player = Player.HERO
-        self.__heroes:List[Hero] = []
+        self.__heroes:List[Heroes] = []
         self.__villains:List[Villain] = []
     
     @property
@@ -53,16 +53,16 @@ class Dungeon:
         self.__player = player
     
     @property
-    def heroes(self) -> List[Hero]:
+    def heroes(self) -> List[Heroes]:
         return self.__heroes
     @heroes.setter
-    def heroes(self, heroes:List[Hero]) -> None:
-        if type(heroes) != List[Hero]:
+    def heroes(self, heroes:List[Heroes]) -> None:
+        if type(heroes) != List[Heroes]:
             raise TypeError
         self.__heroes = heroes
     
     @property
-    def villains(self) -> List[Hero]:
+    def villains(self) -> List[Heroes]:
         return self.__villains
     @villains.setter
     def villains(self, villains:List[Villain]) -> None:
