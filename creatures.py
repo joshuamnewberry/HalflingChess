@@ -5,14 +5,10 @@ class Villain(Character):
         super().__init__(Player.VILLAIN)
     
     def is_valid_move(self, from_coord:Coord, to_coord:Coord, board:List[List[None|Character]]) -> bool:
-        if from_coord.x == to_coord.x and from_coord.y == to_coord.y:
-            return False
-        
+        pass
     
     def is_valid_attack(self, from_coord: Coord, to_coord: Coord, board:List[List[None|Character]]) -> bool:
-        if from_coord.x == to_coord.x and from_coord.y == to_coord.y:
-            return False
-        
+        pass
     
     def calculate_dice(self, target:Character, attack:bool = True, lst:list = [], *args, **kwargs) -> int:
         pass
@@ -45,19 +41,15 @@ class Necromancer(Villain):
         target.player = Player.VILLAIN
         target.temp_health = int(target.health / 2)
 
-class Hero(Character):
+class Heroes(Character):
     def __init__(self) -> None:
         super().__init__(Player.HERO)
     
     def is_valid_move(self, from_coord:Coord, to_coord:Coord, board:List[List[None|Character]]) -> bool:
-        if from_coord.x == to_coord.x and from_coord.y == to_coord.y:
-            return False
-        
+        pass
     
     def is_valid_attack(self, from_coord:Coord, to_coord:Coord, board:List[List[None|Character]]) -> bool:
-        if from_coord.x == to_coord.x and from_coord.y == to_coord.y:
-            return False
-        
+        pass
     
     def calculate_dice(self, target:Character, attack:bool = True, lst:list = [], *args, **kwargs) -> int:
         pass
@@ -65,7 +57,7 @@ class Hero(Character):
     def deal_damage(self, target:Character, damage:int, *args, **kwargs) -> None:
         pass
 
-class Warrior(Hero):
+class Warrior(Heroes):
     def __init__(self) -> None:
         super().__init__()
         self.health = 7
@@ -75,7 +67,7 @@ class Warrior(Hero):
     def calculate_dice(self, target:Character, attack:bool = True, lst:list = [], gob:list = []) -> None:
         pass
 
-class Mage(Hero):
+class Mage(Heroes):
     def __init__(self) -> None:
         super().__init__()
         self.combat = [2, 2]
@@ -85,7 +77,7 @@ class Mage(Hero):
     def deal_damage(self, target:Character, damage:int):
         pass
 
-class Paladin(Hero):
+class Paladin(Heroes):
     def __init__(self) -> None:
         super().__init__()
         self.__heal = True
@@ -106,7 +98,7 @@ class Paladin(Hero):
             target.temp_health = int(target.health / 2)
             self.__heal = False
 
-class Ranger(Hero):
+class Ranger(Heroes):
     def __init__(self) -> None:
         super().__init__()
         self.range = 3
