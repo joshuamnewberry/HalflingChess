@@ -53,7 +53,7 @@ class Game:
         co = self.find_character(self.selected)
         mv = [Coord(co[0], co[1])]
         q = ''
-        if type(self.selected) == Hero:
+        if type(self.selected) == Heroes:
 
             while len(mv) < self.selected.move or q != 'q':
                 try:
