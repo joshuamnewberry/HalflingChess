@@ -15,6 +15,8 @@ class Player(Enum):
 
 class Character(ABC):
     def __init__(self, player:Player) -> None:
+        if type(player) != Player:
+            raise TypeError
         self.__player = player
         self.__health = 5
         self.__temp_health = 5
@@ -24,13 +26,11 @@ class Character(ABC):
         self.__range = 1
     
     def __str__(self) -> str:
-        return 'Character'
+        return self.__class__.__name__
     
-    def integerGreaterThanZero(num) -> None:
+    def integerType(num) -> None:
         if type(num) != int:
             raise TypeError
-        if num < 0:
-            raise ValueError
     
     @property
     def player(self) -> Player:
@@ -46,7 +46,9 @@ class Character(ABC):
         return self.__health
     @health.setter
     def health(self, health:int) -> None:
-        self.integerGreaterThanZero(health)
+        self.integerType(health)
+        if health <= 0:
+            raise ValueError
         self.__health = health
     
     @property
@@ -54,7 +56,7 @@ class Character(ABC):
         return self.__temp_health
     @player.setter
     def temp_health(self, temp_health:int) -> None:
-        self.integerGreaterThanZero(temp_health)
+        self.integerType(temp_health)
         self.__temp_health = temp_health
     
     @property
@@ -62,8 +64,10 @@ class Character(ABC):
         return [self.__attack, self.__defense]
     @combat.setter
     def attack(self, combat:list) -> None:
-        self.integerGreaterThanZero(combat[0])
-        self.integerGreaterThanZero(combat[1])
+        self.integerType(combat[0])
+        self.integerType(combat[1])
+        if combat[0] < 0 or combat[1] < 0:
+            raise ValueError
         self.__attack = combat[0]
         self.__defense = combat[1]
     
@@ -72,7 +76,9 @@ class Character(ABC):
         return self.__move
     @move.setter
     def move(self, move:int) -> None:
-        self.integerGreaterThanZero(move)
+        self.integerType()
+        if move <= 0:
+            raise ValueError
         self.__move = move
     
     @property
@@ -80,16 +86,20 @@ class Character(ABC):
         return self.__range
     @range.setter
     def range(self, range:int) -> None:
-        self.integerGreaterThanZero(range)
+        self.integerType(range)
+        if range <= 0:
+            raise ValueError
         self.__range = range
     
     @abstractmethod
     def is_valid_move(self, from_coord:Coord, to_coord:Coord, board:List[List[None|Character]]) -> bool:
-        pass
+        if from_coord.x == to_coord.x and from_coord.y == to_coord.y:
+            return False
         
     @abstractmethod
     def is_valid_attack(self, from_coord:Coord, to_coord:Coord, board:List[List[None|Character]]) -> bool:
-        pass
+        if from_coord.x == to_coord.x and from_coord.y == to_coord.y:
+            return False
     
     @abstractmethod
     def calculate_dice(self, target:Character, attack:bool = True, lst:list = [], *args, **kwargs) -> int:
