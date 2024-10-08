@@ -4,17 +4,26 @@ class Villain(Character):
     def __init__(self) -> None:
         super().__init__(Player.VILLAIN)
     
+    def __str__(self) -> str:
+        return super().__str__()
+    
     def is_valid_move(self, from_coord:Coord, to_coord:Coord, board:List[List[None|Character]]) -> bool:
-        pass
+        if super().is_valid_move(from_coord, to_coord, board):
+            if from_coord.x == to_coord.x or from_coord.y == from_coord.y:
+                return True
+        return False
     
     def is_valid_attack(self, from_coord: Coord, to_coord: Coord, board:List[List[None|Character]]) -> bool:
-        pass
+        if super().is_valid_move(from_coord, to_coord, board):
+            if from_coord.x == to_coord.x or from_coord.y == from_coord.y:
+                return True
+        return False
     
     def calculate_dice(self, target:Character, attack:bool = True, lst:list = [], *args, **kwargs) -> int:
-        pass
+        return super().calculate_dice(target, attack, lst)
 
     def deal_damage(self, target:Character, damage:int, *args, **kwargs) -> None:
-        pass
+        super().deal_damage(target, damage)
 
 class Goblin(Villain):
     def __init__(self) -> None:
@@ -45,17 +54,20 @@ class Heroes(Character):
     def __init__(self) -> None:
         super().__init__(Player.HERO)
     
-    def is_valid_move(self, from_coord:Coord, to_coord:Coord, board:List[List[None|Character]]) -> bool:
-        pass
+    def __str__(self) -> str:
+        return super().__str__()
     
-    def is_valid_attack(self, from_coord:Coord, to_coord:Coord, board:List[List[None|Character]]) -> bool:
-        pass
+    def is_valid_move(self, from_coord:Coord, to_coord:Coord, board:List[List[None|Character]]) -> bool:
+        return super().is_valid_move(from_coord, to_coord, board)
+    
+    def is_valid_attack(self, from_coord: Coord, to_coord: Coord, board:List[List[None|Character]]) -> bool:
+        return super().is_valid_move(from_coord, to_coord, board)
     
     def calculate_dice(self, target:Character, attack:bool = True, lst:list = [], *args, **kwargs) -> int:
-        pass
+        return super().calculate_dice(target, attack, lst)
 
     def deal_damage(self, target:Character, damage:int, *args, **kwargs) -> None:
-        pass
+        super().deal_damage(target, damage)
 
 class Warrior(Heroes):
     def __init__(self) -> None:
@@ -64,8 +76,19 @@ class Warrior(Heroes):
         self.temp_health = 7
         self.combat = [2, 4]
     
-    def calculate_dice(self, target:Character, attack:bool = True, lst:list = [], gob:list = []) -> None:
-        pass
+    def calculate_dice(self, target:Character, attack:bool = True, lst:list = [], gob:list = []) -> int:
+        if target.__class__ == Goblin:
+            if len(gob) == 0:
+                return super().calculate_dice(target, attack+2, list)
+            num = 0
+            compare = 3
+            if attack:
+                compare = 4
+            if gob[0] > compare:
+                num += 1
+            if gob[1] > compare:
+                num += 1
+            return super().calculate_dice(target, attack, list) + num
 
 class Mage(Heroes):
     def __init__(self) -> None:
@@ -75,7 +98,7 @@ class Mage(Heroes):
         self.move = 2
     
     def deal_damage(self, target:Character, damage:int):
-        pass
+        super().deal_damage(target, damage + 1)
 
 class Paladin(Heroes):
     def __init__(self) -> None:
@@ -103,5 +126,7 @@ class Ranger(Heroes):
         super().__init__()
         self.range = 3
     
-    def deal_damage(self, target:Character, damage:int):
-        pass
+    def deal_damage(self, target:Character, damage:int) -> None:
+        if target.__class__ == Skeleton:
+            return super().deal_damage(target, damage-1)
+        return super().deal_damage(target, damage)
