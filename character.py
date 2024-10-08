@@ -148,7 +148,8 @@ class Character(ABC):
 
     @abstractmethod
     def deal_damage(self, target:Character, damage:int, *args, **kwargs) -> None:
+        print(f"{target.__class__.__name__} was dealt {damage} damage")
         try:
             target.__temp_health -= damage
-        except CharacterDeath:
-            print()
+        except CharacterDeath as msg:
+            print(msg)
