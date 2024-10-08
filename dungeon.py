@@ -8,15 +8,18 @@ class Dungeon:
         if num < 4:
             raise ValueError
 
-    def __init__(self, height:int, width:int, lst:list) -> None:
+    def __init__(self, height:int, width:int, villains:List[Villain] = []) -> None:
         Dungeon.boardLength(height)
         Dungeon.boardLength(width)
         self.__height = height
         self.__width = width
         self.__board:List[List[None|Character]] = [[0 for i in range(height)] for j in range(width)]
         self.__player:Player = Player.HERO
-        self.__heroes:List[Heroes] = []
-        self.__villains:List[Villain] = []
+        self.__heroes:List[Heroes] = [Warrior(), Mage(), Paladin(), Ranger()]
+        if villains == []:
+            self.__villains:List[Villain] = Dungeon.generate_villains()
+        else:
+            self.__villains:List[Villain] = villains
     
     @property
     def height(self) -> int:
