@@ -111,6 +111,8 @@ class Character(ABC):
             return False
         if from_coord.x > height or to_coord.x > height or from_coord.y > width or to_coord.y > width:
             return False
+        if abs(to_coord.x - from_coord.x) > self.move or abs(to_coord.y - from_coord.y) > self.move:
+            return False
         if board[from_coord.x][from_coord.y] != self:
             return False
         if board[to_coord.x][to_coord.y] != None:
