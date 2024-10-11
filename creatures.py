@@ -50,7 +50,7 @@ class Necromancer(Villain):
         target.player = Player.VILLAIN
         target.temp_health = int(target.health / 2)
 
-class Heroes(Character):
+class Hero(Character):
     def __init__(self) -> None:
         super().__init__(Player.HERO)
     
@@ -69,7 +69,7 @@ class Heroes(Character):
     def deal_damage(self, target:Character, damage:int, *args, **kwargs) -> None:
         super().deal_damage(target, damage)
 
-class Warrior(Heroes):
+class Warrior(Hero):
     def __init__(self) -> None:
         super().__init__()
         self.health = 7
@@ -90,7 +90,7 @@ class Warrior(Heroes):
                 num += 1
             return super().calculate_dice(target, attack, list) + num
 
-class Mage(Heroes):
+class Mage(Hero):
     def __init__(self) -> None:
         super().__init__()
         self.combat = [2, 2]
@@ -100,7 +100,7 @@ class Mage(Heroes):
     def deal_damage(self, target:Character, damage:int):
         super().deal_damage(target, damage + 1)
 
-class Paladin(Heroes):
+class Paladin(Hero):
     def __init__(self) -> None:
         super().__init__()
         self.__heal = True
@@ -121,7 +121,7 @@ class Paladin(Heroes):
             target.temp_health = int(target.health / 2)
             self.__heal = False
 
-class Ranger(Heroes):
+class Ranger(Hero):
     def __init__(self) -> None:
         super().__init__()
         self.range = 3
