@@ -74,10 +74,10 @@ class Dungeon:
         self.__villains = villains
     
     def is_valid_move(self, coords:List[Coord]) -> bool:
-        pass
+        return self.board[coords[0]][coords[1]].is_valid_attack(coords[0], coords[1], self.board)
 
     def is_valid_attack(self, coords:List[Coord]) -> bool:
-        pass
+        return self.board[coords[0]][coords[1]].is_valid_attack(coords[0], coords[1], self.board)
 
     def character_at(self, x:int, y:int) -> Character:
         pass
@@ -115,10 +115,16 @@ class Dungeon:
         print(st)
     
     def is_dungeon_clear(self) -> bool:
-        pass
+        for villain in self.villains:
+            if villain.temp_health != 0:
+                return False
+        return True
 
     def adventurer_defeat(self) -> bool:
-        pass
+        for hero in self.heroes:
+            if hero.temp_health != 0:
+                return False
+        return True
 
     def generate_villains(self) -> None:
         pass
