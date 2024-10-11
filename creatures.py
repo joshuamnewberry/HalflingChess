@@ -10,11 +10,12 @@ class Villain(Character):
     def is_valid_move(self, from_coord:Coord, to_coord:Coord, board:List[List[None|Character]]) -> bool:
         if super().is_valid_move(from_coord, to_coord, board):
             if from_coord.x == to_coord.x or from_coord.y == from_coord.y:
-                return True
+                if abs(to_coord.x - from_coord.x) <= self.move and abs(to_coord.y - from_coord.y) <= self.move:
+                    return True
         return False
     
     def is_valid_attack(self, from_coord: Coord, to_coord: Coord, board:List[List[None|Character]]) -> bool:
-        if super().is_valid_move(from_coord, to_coord, board):
+        if super().is_valid_attack(from_coord, to_coord, board):
             if from_coord.x == to_coord.x or from_coord.y == from_coord.y:
                 return True
         return False
@@ -61,7 +62,7 @@ class Hero(Character):
         return super().is_valid_move(from_coord, to_coord, board)
     
     def is_valid_attack(self, from_coord: Coord, to_coord: Coord, board:List[List[None|Character]]) -> bool:
-        return super().is_valid_move(from_coord, to_coord, board)
+        return super().is_valid_attack(from_coord, to_coord, board)
     
     def calculate_dice(self, target:Character, attack:bool = True, lst:list = [], *args, **kwargs) -> int:
         return super().calculate_dice(target, attack, lst)
