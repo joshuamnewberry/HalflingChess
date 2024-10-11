@@ -53,7 +53,7 @@ class Game:
         co = self.find_character(self.selected)
         mv = [Coord(co[0], co[1])]
         q = ''
-        if isinstance(self.selected, Heroes):
+        if isinstance(self.selected, Hero):
             while len(mv) < self.selected.move or q != 'q':
                 try:
                     q = input('Select a coordinate (x, y): ')
