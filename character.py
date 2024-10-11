@@ -8,7 +8,7 @@ from coord import Coord
 class CharacterDeath(Exception):
     def __init__(self, msg:str, char:Character) -> None:
         self.message = msg
-        self.char = char
+        char.temp_health = 0
     
     def __str__(self) -> str:
         return ""
@@ -29,7 +29,6 @@ class Character(ABC):
         self.__move = 3
         self.__range = 1
     
-    @abstractmethod
     def __str__(self) -> str:
         return self.__class__.__name__
     
@@ -64,13 +63,15 @@ class Character(ABC):
         Character.integerType(temp_health)
         self.__temp_health = temp_health
         if self.__temp_health < 0:
-            raise CharacterDeath
+            raise CharacterDeath(f"{self} has died", self)
     
     @property
     def combat(self) -> list:
         return [self.__attack, self.__defense]
     @combat.setter
     def combat(self, combat:list) -> None:
+        if type(combat) != list:
+            raise TypeError
         Character.integerType(combat[0])
         Character.integerType(combat[1])
         if combat[0] < 0 or combat[1] < 0:
@@ -83,7 +84,7 @@ class Character(ABC):
         return self.__move
     @move.setter
     def move(self, move:int) -> None:
-        self.integerType()
+        self.integerType(move)
         if move <= 0:
             raise ValueError
         self.__move = move
@@ -137,15 +138,13 @@ class Character(ABC):
         if attack:
             compare = 4
         if lst == []:
-            for i in range(1, attack):
-                if randint(1, 6) > compare:
-                    num += 1
-        else:
-            for i in lst:
-                if i > compare:
-                    num += 1
+            for _ in range(1, attack):
+                lst.append(randint(1, 6))
+        for i in range(1, attack):
+            if lst[i] > compare:
+                num += 1
         return num
-
+    
     @abstractmethod
     def deal_damage(self, target:Character, damage:int, *args, **kwargs) -> None:
         print(f"{target.__class__.__name__} was dealt {damage} damage")
