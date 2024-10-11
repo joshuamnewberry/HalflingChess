@@ -32,7 +32,7 @@ class Character(ABC):
     def __str__(self) -> str:
         return self.__class__.__name__
     
-    def integerType(num) -> None:
+    def integerType(self, num) -> None:
         if type(num) != int:
             raise TypeError
     
@@ -50,7 +50,7 @@ class Character(ABC):
         return self.__health
     @health.setter
     def health(self, health:int) -> None:
-        Character.integerType(health)
+        self.integerType(health)
         if health <= 0:
             raise ValueError
         self.__health = health
@@ -58,9 +58,9 @@ class Character(ABC):
     @property
     def temp_health(self) -> int:
         return self.__temp_health
-    @player.setter
+    @temp_health.setter
     def temp_health(self, temp_health:int) -> None:
-        Character.integerType(temp_health)
+        self.integerType(temp_health)
         self.__temp_health = temp_health
         if self.__temp_health < 0:
             raise CharacterDeath(f"{self} has died", self)
@@ -72,8 +72,10 @@ class Character(ABC):
     def combat(self, combat:list) -> None:
         if type(combat) != list:
             raise TypeError
-        Character.integerType(combat[0])
-        Character.integerType(combat[1])
+        if len(combat) != 2:
+            raise ValueError
+        self.integerType(combat[0])
+        self.integerType(combat[1])
         if combat[0] < 0 or combat[1] < 0:
             raise ValueError
         self.__attack = combat[0]
@@ -103,11 +105,11 @@ class Character(ABC):
     def is_valid_move(self, from_coord:Coord, to_coord:Coord, board:List[List[None|Character]]) -> bool:
         if from_coord.x == to_coord.x and from_coord.y == to_coord.y:
             return False
-        height = len(board)
-        width = len(board[0])
+        height = len(board)-1
+        width = len(board[0])-1
         if from_coord.x < 0 or to_coord.x < 0 or from_coord.y < 0 or to_coord.y < 0:
             return False
-        if from_coord.x > width or to_coord.x > width or from_coord.y > height or to_coord.y > height:
+        if from_coord.x > height or to_coord.x > height or from_coord.y > width or to_coord.y > width:
             return False
         if board[from_coord.x][from_coord.y] != self:
             return False
@@ -119,11 +121,13 @@ class Character(ABC):
     def is_valid_attack(self, from_coord:Coord, to_coord:Coord, board:List[List[None|Character]]) -> bool:
         if from_coord.x == to_coord.x and from_coord.y == to_coord.y:
             return False
-        height = len(board)
-        width = len(board[0])
+        height = len(board)-1
+        width = len(board[0])-1
         if from_coord.x < 0 or to_coord.x < 0 or from_coord.y < 0 or to_coord.y < 0:
             return False
-        if from_coord.x > width or to_coord.x > width or from_coord.y > height or to_coord.y > height:
+        if from_coord.x > height or to_coord.x > height or from_coord.y > width or to_coord.y > width:
+            return False
+        if abs(to_coord.x - from_coord.x) > self.range or abs(to_coord.y - from_coord.y) > self.range:
             return False
         if board[from_coord.x][from_coord.y] != self:
             return False
