@@ -26,7 +26,8 @@ class CharacterTesting(unittest.TestCase):
             c.player = 1
     
     def testHealthRead(self):
-        self.assertTrue(a.health == 5, b.health == 5)
+        self.assertEqual(a.health, 5)
+        self.assertEqual(b.health, 5)
     
     def testHealthWrite(self):
         c = Hero()
@@ -49,7 +50,7 @@ class HeroTesting(unittest.TestCase):
     Tests Hero Method implementations and Child Class method changes
 
     """
-    
+    pass
 
 class VillainTesting(unittest.TestCase):
     """

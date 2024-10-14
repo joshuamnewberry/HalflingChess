@@ -10,13 +10,15 @@ class Villain(Character):
     def is_valid_move(self, from_coord:Coord, to_coord:Coord, board:List[List[None|Character]]) -> bool:
         if super().is_valid_move(from_coord, to_coord, board):
             if from_coord.x == to_coord.x or from_coord.y == from_coord.y:
-                return True
+                if abs(to_coord.x - from_coord.x) <= self.move and abs(to_coord.y - from_coord.y) <= self.move:
+                    return True
         return False
     
     def is_valid_attack(self, from_coord: Coord, to_coord: Coord, board:List[List[None|Character]]) -> bool:
         if super().is_valid_attack(from_coord, to_coord, board):
             if from_coord.x == to_coord.x or from_coord.y == from_coord.y:
-                return True
+                if abs(to_coord.x - from_coord.x) <= self.range and abs(to_coord.y - from_coord.y) <= self.range:
+                    return True
         return False
     
     def calculate_dice(self, target:Character, attack:bool = True, lst:list = [], *args, **kwargs) -> int:
@@ -47,8 +49,9 @@ class Necromancer(Villain):
         self.range = 3
     
     def raise_dead(target:Character) -> None:
-        target.player = Player.VILLAIN
-        target.temp_health = int(target.health / 2)
+        if target.temp_health == 0:
+            target.player = Player.VILLAIN
+            target.temp_health = int(target.health / 2)
 
 class Hero(Character):
     def __init__(self) -> None:
@@ -58,10 +61,16 @@ class Hero(Character):
         return super().__str__()
     
     def is_valid_move(self, from_coord:Coord, to_coord:Coord, board:List[List[None|Character]]) -> bool:
-        return super().is_valid_move(from_coord, to_coord, board)
+        if super().is_valid_move(from_coord, to_coord, board):
+            if abs(to_coord.x - from_coord.x) <= self.move and abs(to_coord.y - from_coord.y) <= self.move:
+                return True
+        return False
     
     def is_valid_attack(self, from_coord: Coord, to_coord: Coord, board:List[List[None|Character]]) -> bool:
-        return super().is_valid_attack(from_coord, to_coord, board)
+        if super().is_valid_attack(from_coord, to_coord, board):
+            if abs(to_coord.x - from_coord.x) <= self.range and abs(to_coord.y - from_coord.y) <= self.range:
+                return True
+        return False
     
     def calculate_dice(self, target:Character, attack:bool = True, lst:list = [], *args, **kwargs) -> int:
         return super().calculate_dice(target, attack, lst)
@@ -78,7 +87,7 @@ class Warrior(Hero):
     
     def calculate_dice(self, target:Character, attack:bool = True, lst:list = [], gob:list = []) -> int:
         if target.__class__ == Goblin:
-            if len(gob) == 0:
+            if gob == []:
                 return super().calculate_dice(target, attack+2, list)
             num = 0
             compare = 3

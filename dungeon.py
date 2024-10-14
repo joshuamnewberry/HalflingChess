@@ -17,7 +17,7 @@ class Dungeon:
         self.__player:Player = Player.HERO
         self.__heroes:List[Hero] = [Warrior(), Mage(), Paladin(), Ranger()]
         if villains == []:
-            self.__villains:List[Villain] = Dungeon.generate_villains()
+            self.__villains:List[Villain] = self.generate_villains()
         else:
             self.__villains:List[Villain] = villains
     
@@ -127,7 +127,7 @@ class Dungeon:
         return True
 
     def generate_villains(self) -> None:
-        pass
+        return []
 
     def place_heroes(self) -> None:
         pass
