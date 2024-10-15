@@ -21,7 +21,7 @@ class Villain(Character):
                     return True
         return False
     
-    def calculate_dice(self, target:Character, attack:bool = True, lst:list = [], *args, **kwargs) -> int:
+    def calculate_dice(self, target:Character, attack:bool = True, lst:list = None, *args, **kwargs) -> int:
         return super().calculate_dice(target, attack, lst)
 
     def deal_damage(self, target:Character, damage:int, *args, **kwargs) -> None:
@@ -48,7 +48,7 @@ class Necromancer(Villain):
         self.combat = [1, 2]
         self.range = 3
     
-    def raise_dead(target:Character) -> None:
+    def raise_dead(self, target:Character) -> None:
         if target.temp_health == 0:
             target.player = Player.VILLAIN
             target.temp_health = int(target.health / 2)
@@ -72,7 +72,7 @@ class Hero(Character):
                 return True
         return False
     
-    def calculate_dice(self, target:Character, attack:bool = True, lst:list = [], *args, **kwargs) -> int:
+    def calculate_dice(self, target:Character, attack:bool = True, lst:list = None, *args, **kwargs) -> int:
         return super().calculate_dice(target, attack, lst)
 
     def deal_damage(self, target:Character, damage:int, *args, **kwargs) -> None:
@@ -85,10 +85,10 @@ class Warrior(Hero):
         self.temp_health = 7
         self.combat = [2, 4]
     
-    def calculate_dice(self, target:Character, attack:bool = True, lst:list = [], gob:list = []) -> int:
+    def calculate_dice(self, target:Character, attack:bool = True, lst:list = None, gob:list = None) -> int:
         if target.__class__ == Goblin:
-            if gob == []:
-                return super().calculate_dice(target, attack+2, list)
+            if gob is None:
+                return super().calculate_dice(target, attack + 2, list)
             num = 0
             compare = 3
             if attack:
@@ -97,7 +97,8 @@ class Warrior(Hero):
                 num += 1
             if gob[1] > compare:
                 num += 1
-            return super().calculate_dice(target, attack, list) + num
+            return super().calculate_dice(target, attack, lst) + num
+        return super().calculate_dice(target, attack, lst)
 
 class Mage(Hero):
     def __init__(self) -> None:
@@ -137,5 +138,6 @@ class Ranger(Hero):
     
     def deal_damage(self, target:Character, damage:int) -> None:
         if target.__class__ == Skeleton:
-            return super().deal_damage(target, damage-1)
-        return super().deal_damage(target, damage)
+            super().deal_damage(target, damage-1)
+            return
+        super().deal_damage(target, damage)

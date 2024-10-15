@@ -134,15 +134,17 @@ class Character(ABC):
         return True
     
     @abstractmethod
-    def calculate_dice(self, target:Character, attack:bool = True, lst:list = [], *args, **kwargs) -> int:
+    def calculate_dice(self, target:Character, attack:bool = True, lst:list = None, *args, **kwargs) -> int:
+        if lst is None:
+            lst = []
         num = 0
         compare = 3
         if attack:
             compare = 4
         if lst == []:
-            for _ in range(1, attack):
+            for _ in range(1, self.__attack):
                 lst.append(randint(1, 6))
-        for i in range(1, attack):
+        for i in range(0, self.__attack-1):
             if lst[i] > compare:
                 num += 1
         return num
