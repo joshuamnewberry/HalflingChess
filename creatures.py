@@ -86,18 +86,18 @@ class Warrior(Hero):
         self.combat = [2, 4]
     
     def calculate_dice(self, target:Character, attack:bool = True, lst:list = None, gob:list = None) -> int:
-        if target.__class__ == Goblin:
+        if attack and target.__class__ == Goblin:
             if gob is None:
                 return super().calculate_dice(target, attack + 2, list)
-            num = 0
+            sucess_num = 0
             compare = 3
             if attack:
                 compare = 4
             if gob[0] > compare:
-                num += 1
+                sucess_num += 1
             if gob[1] > compare:
-                num += 1
-            return super().calculate_dice(target, attack, lst) + num
+                sucess_num += 1
+            return super().calculate_dice(target, attack, lst) + sucess_num
         return super().calculate_dice(target, attack, lst)
 
 class Mage(Hero):

@@ -137,17 +137,18 @@ class Character(ABC):
     def calculate_dice(self, target:Character, attack:bool = True, lst:list = None, *args, **kwargs) -> int:
         if lst is None:
             lst = []
-        num = 0
+        sucess_num = 0
+        dice_num = self.combat[int(not attack)]
         compare = 3
         if attack:
             compare = 4
         if lst == []:
-            for _ in range(1, self.__attack):
+            for _ in range(1, dice_num):
                 lst.append(randint(1, 6))
         for i in range(0, self.__attack-1):
             if lst[i] > compare:
-                num += 1
-        return num
+                sucess_num += 1
+        return sucess_num
     
     @abstractmethod
     def deal_damage(self, target:Character, damage:int, *args, **kwargs) -> None:
