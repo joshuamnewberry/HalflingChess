@@ -9,8 +9,16 @@ class Villain(Character):
     
     def is_valid_move(self, from_coord:Coord, to_coord:Coord, board:List[List[None|Character]]) -> bool:
         if super().is_valid_move(from_coord, to_coord, board):
-            if from_coord.x == to_coord.x or from_coord.y == from_coord.y:
-                if abs(to_coord.x - from_coord.x) <= self.move and abs(to_coord.y - from_coord.y) <= self.move:
+            if abs(to_coord.x - from_coord.x) <= self.move and abs(to_coord.y - from_coord.y) <= self.move:
+                if from_coord.x == to_coord.x:
+                    for y in range (to_coord.y, from_coord.y):
+                        if board[from_coord.x][y] is not None:
+                            return False
+                    return True
+                elif from_coord.y == to_coord.y:
+                    for x in range (to_coord.x, from_coord.x):
+                        if board[x][from_coord.y] is not None:
+                            return False
                     return True
         return False
     
