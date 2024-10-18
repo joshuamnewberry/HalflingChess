@@ -1,5 +1,4 @@
 from character import *
-from math import copysign
 
 class Villain(Character):
     def __init__(self) -> None:
@@ -34,12 +33,12 @@ class Villain(Character):
         if super().is_valid_move(from_coord, to_coord, board):
             if abs(to_coord.x - from_coord.x) <= self.move and abs(to_coord.y - from_coord.y) <= self.move:
                 if from_coord.x == to_coord.x:
-                    for y in range (to_coord.y, from_coord.y, int(copysign(1, to_coord.y-from_coord.y))):
+                    for y in range (min(from_coord.y, to_coord.y) + 1, max(from_coord.y, to_coord.y)):
                         if board[from_coord.x][y] != None:
                             return False
                     return True
                 elif from_coord.y == to_coord.y:
-                    for x in range (to_coord.x, from_coord.x, int(copysign(1, to_coord.x-from_coord.x))):
+                    for x in range (min(from_coord.x, to_coord.x) + 1, max(from_coord.x, to_coord.x)):
                         if board[x][from_coord.y] != None:
                             return False
                     return True
@@ -276,20 +275,17 @@ class Warrior(Hero):
         sucess_num: int number of sucessful rolls
         
         """
+        sucess_num = 0
         if attack and target.__class__ == Goblin:
             if gob is None:
                 gob = []
                 for _ in range(0, 2):
-                    lst.append(randint(1, 6))
-            sucess_num = 0
-            compare = 3
-            if attack:
-                compare = 4
+                    gob.append(randint(1, 6))
+            compare = 4
             for roll in gob:
                 if roll > compare:
                     sucess_num += 1
-            return super().calculate_dice(target, attack, lst) + sucess_num
-        return super().calculate_dice(target, attack, lst)
+        return super().calculate_dice(target, attack, lst) + sucess_num
 
 class Mage(Hero):
     def __init__(self) -> None:
@@ -372,7 +368,7 @@ class Paladin(Hero):
         None
 
         """
-        if not self.__heal or target.player != Player.Hero or target.temp_health != 0 or not self.is_valid_attack(from_coord, to_coord, board):
+        if not self.__heal or target.player != Player.HERO or target.temp_health != 0 or not self.is_valid_attack(from_coord, to_coord, board):
             return
         target.temp_health = int(target.health / 2)
         self.__heal = False

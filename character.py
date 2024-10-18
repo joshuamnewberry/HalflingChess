@@ -191,17 +191,23 @@ class Character(ABC):
         [self.__attack, self.__defense] will return attack and defense variables in a list of length 2
 
         """
+        # Return attack and defense as a list
         return [self.__attack, self.__defense]
     @combat.setter
     def combat(self, combat:list) -> None:
+        # Check combat is list
         if type(combat) != list:
             raise TypeError
+        # Check length of 2
         if len(combat) != 2:
             raise ValueError
+        # Check integer type
         self.integerType(combat[0])
         self.integerType(combat[1])
+        # Check greater than or equal to zero
         if combat[0] < 0 or combat[1] < 0:
             raise ValueError
+        # Store values
         self.__attack = combat[0]
         self.__defense = combat[1]
     
@@ -217,12 +223,17 @@ class Character(ABC):
         self.__move if getting will return move
 
         """
+
+        # Return move num
         return self.__move
     @move.setter
     def move(self, move:int) -> None:
+        # Check int type
         self.integerType(move)
+        # Check greater than zero
         if move <= 0:
             raise ValueError
+        # Store move num
         self.__move = move
     
     @property
@@ -237,12 +248,17 @@ class Character(ABC):
         self.__range if getting will return range
 
         """
+        
+        # Return range num
         return self.__range
     @range.setter
     def range(self, range:int) -> None:
+        # Check int type
         self.integerType(range)
+        # Check greater than zero
         if range <= 0:
             raise ValueError
+        # Store range num
         self.__range = range
     
     @abstractmethod
@@ -259,18 +275,26 @@ class Character(ABC):
         True or False
         
         """
+
+        # Check from_cood not equal to to_coord
         if from_coord.x == to_coord.x and from_coord.y == to_coord.y:
             return False
+        # Store height and width variables
         height = len(board)-1
         width = len(board[0])-1
+        # Check x and y less than zero
         if from_coord.x < 0 or to_coord.x < 0 or from_coord.y < 0 or to_coord.y < 0:
             return False
+        # Check x and y greater than height and width
         if from_coord.x > height or to_coord.x > height or from_coord.y > width or to_coord.y > width:
             return False
+        # Check from_coord equal to self
         if board[from_coord.x][from_coord.y] != self:
             return False
+        # Check to_coord is empty
         if board[to_coord.x][to_coord.y] != None:
             return False
+        # If arrive here return True
         return True
     
     @abstractmethod
@@ -287,18 +311,25 @@ class Character(ABC):
         True or False
         
         """
+        # Check from_cood not equal to to_coord
         if from_coord.x == to_coord.x and from_coord.y == to_coord.y:
             return False
+        # Store height and width variables
         height = len(board)-1
         width = len(board[0])-1
+        # Check x and y less than zero
         if from_coord.x < 0 or to_coord.x < 0 or from_coord.y < 0 or to_coord.y < 0:
             return False
+        # Check x and y greater than height and width
         if from_coord.x > height or to_coord.x > height or from_coord.y > width or to_coord.y > width:
             return False
+        # Check from_coord equal to self
         if board[from_coord.x][from_coord.y] != self:
             return False
+        # Check to_coord contains Character
         if not isinstance(board[to_coord.x][to_coord.y], Character):
             return False
+        # If arrive here return True
         return True
     
     @abstractmethod
@@ -315,19 +346,30 @@ class Character(ABC):
         sucess_num:int number of sucessful rolls
         
         """
-        if lst is None:
-            lst = []
+
+        # Create sucess_num variable
         sucess_num = 0
+        # Grab dice num based on attack bool
         dice_num = self.combat[int(not attack)]
+        # Create compare = 3
         compare = 3
+        # If attacking compare = 4
         if attack:
             compare = 4
-        if lst == []:
+        # If no list is passed create a list
+        if lst is None:
+            lst = []
+            # Add values to the list up to the dice num
             for _ in range(0, dice_num):
+                # Random values from 1 to 6
                 lst.append(randint(1, 6))
+        # Loop over values up to the dice_num
         for i in range(0, dice_num):
+            # Compare the value to the compare variable
             if lst[i] > compare:
+                # Add one to sucess_num
                 sucess_num += 1
+        # Return number of sucessfully rolled dice
         return sucess_num
     
     @abstractmethod
@@ -343,8 +385,12 @@ class Character(ABC):
         None
         
         """
+
+        # Print damage dealt
         print(f"{target.__class__.__name__} was dealt {damage} damage")
         try:
+            # Modify temp health
             target.__temp_health -= damage
         except CharacterDeath as msg:
+            # If character death occurs print the message
             print(msg)

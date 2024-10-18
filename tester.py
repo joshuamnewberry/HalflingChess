@@ -118,14 +118,14 @@ class VillainTesting(unittest.TestCase):
     Tests Villain Method implementations, properties, and Child Class method changes
 
     """
-    def testHeroPlayerProperty(self) -> None:
+    def testVillainPlayerProperty(self) -> None:
         c = CharacterTesting()
         self.assertTrue(c.testPlayerRead(Villain(), Player.VILLAIN))
         self.assertTrue(c.testPlayerWrite(Villain(), Player.VILLAIN))
         with self.assertRaises(TypeError):
             c.testPlayerWriteInt(Villain())
     
-    def testHeroHealthProperty(self) -> None:
+    def testVillainHealthProperty(self) -> None:
         c = CharacterTesting()
         self.assertTrue(c.testHealthRead(Villain()))
         self.assertTrue(c.testHealthWrite(Villain()))
