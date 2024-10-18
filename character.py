@@ -24,6 +24,8 @@ class CharacterDeath(Exception):
         None
 
         """
+
+        # Store variables
         self.message = msg
         char.temp_health = 0
     
@@ -38,6 +40,7 @@ class CharacterDeath(Exception):
         self.message:str The stored message
 
         """
+        # Return message
         return self.message
 
 class Player(Enum):
@@ -60,9 +63,13 @@ class Character(ABC):
         None
 
         """
+
+        # Check Player Type
         if type(player) != Player:
             raise TypeError
+        # Store Player
         self.__player = player
+        # Store Default values
         self.__health = 5
         self.__temp_health = 5
         self.__attack = 3
@@ -81,6 +88,7 @@ class Character(ABC):
         self.__class__.__name__:str the class name of the object
         
         """
+        # Return Class name
         return self.__class__.__name__
     
     def integerType(self, num:Any) -> None:
@@ -94,6 +102,8 @@ class Character(ABC):
         None
 
         """
+
+        # Raise Type Error if not an int
         if type(num) != int:
             raise TypeError
     
@@ -109,11 +119,15 @@ class Character(ABC):
         self.__player if getting will return player type
 
         """
+
+        # Return Player type
         return self.__player
     @player.setter
     def player(self, player:Player) -> None:
+        # Raise Type Error if not an int
         if type(player) != Player:
             raise TypeError
+        # Store player type
         self.__player = player
     
     @property
@@ -128,12 +142,16 @@ class Character(ABC):
         self.__health if getting will return health
 
         """
+
+        # Return Health num
         return self.__health
     @health.setter
     def health(self, health:int) -> None:
+        # Check int type and greater than zero
         self.integerType(health)
         if health <= 0:
             raise ValueError
+        # Store Health num
         self.__health = health
     
     @property
@@ -148,11 +166,16 @@ class Character(ABC):
         self.__temp_health if getting will return temp_health
 
         """
+
+        # Return Temp__Health num
         return self.__temp_health
     @temp_health.setter
     def temp_health(self, temp_health:int) -> None:
+        # Check int type
         self.integerType(temp_health)
+        # Store Temp_Health num
         self.__temp_health = temp_health
+        # If temp_health is less than 0 raise CharacterDeath
         if self.__temp_health < 0:
             raise CharacterDeath(f"{self} has died", self)
     
@@ -257,7 +280,7 @@ class Character(ABC):
 
         Parameters:
         from_coord:Coord the coordinates of the current position of the character
-        to_coord:Coord the coordinates of the final position of the character
+        to_coord:Coord the coordinates of the target
         board:List[List[None|Character]] the 2D list of the current board containing either None or Character in each slot
 
         Return:
@@ -284,12 +307,12 @@ class Character(ABC):
         Returns the number of successful rolls using lst:list or generating a list of random rolls from 1 to 6
 
         Parameters:
-        from_coord:Coord the coordinates of the current position of the character
-        to_coord:Coord the coordinates of the final position of the character
-        board:List[List[None|Character]] the 2D list of the current board containing either None or Character in each slot
+        target:Character the Character self is in combat with
+        attack:bool true when self is attacking, false when defending
+        lst:list a list used for testing, custom dice rolls
 
         Return:
-        sucess_num: int number of sucessful rolls
+        sucess_num:int number of sucessful rolls
         
         """
         if lst is None:
@@ -300,9 +323,9 @@ class Character(ABC):
         if attack:
             compare = 4
         if lst == []:
-            for _ in range(1, dice_num):
+            for _ in range(0, dice_num):
                 lst.append(randint(1, 6))
-        for i in range(0, self.__attack-1):
+        for i in range(0, dice_num):
             if lst[i] > compare:
                 sucess_num += 1
         return sucess_num
@@ -310,20 +333,18 @@ class Character(ABC):
     @abstractmethod
     def deal_damage(self, target:Character, damage:int, *args, **kwargs) -> None:
         """
-        Modify 
+        Subtract damage from target.temp_health and print message if there is a Character Death
 
         Parameters:
-        from_coord:Coord the coordinates of the current position of the character
-        to_coord:Coord the coordinates of the final position of the character
-        board:List[List[None|Character]] the 2D list of the current board containing either None or Character in each slot
+        target:Character the Character taking damage
+        damage:int the amount of damage taken
 
         Return:
-        sucess_num: int number of sucessful rolls
+        None
         
         """
         print(f"{target.__class__.__name__} was dealt {damage} damage")
         try:
             target.__temp_health -= damage
         except CharacterDeath as msg:
-           
             print(msg)
