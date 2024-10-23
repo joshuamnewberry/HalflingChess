@@ -1,65 +1,55 @@
 from creatures import *
 from coord import *
+import random
 
 class Dungeon:
     def boardLength(num) -> None:
-        if type(num) != int:
-            raise TypeError
+        if not isinstance(num, int):
+            raise TypeError(f'Board length must be an integer')
         if num < 4:
-            raise ValueError
+            raise ValueError(f"Board length must be at least 4")
         if num > 12:
-            raise ValueError
+            raise ValueError(f'Board length must be no more than 12')
 
     def __init__(self, height: int, width: int, villains: List[Villain] = []) -> None:
         Dungeon.boardLength(height)
         Dungeon.boardLength(width)
         self.__height = height
         self.__width = width
-        self.__board: List[List[None | Character]] = [[0 for i in range(height)] for j in range(width)]
-        self.__player: Player = Player.HERO
-        self.__heroes: List[Hero] = [Warrior(), Mage(), Paladin(), Ranger()]
+        board = [[None for i in range(width)] for i in range(height)]
+        if not isinstance(board, list) or not all(isinstance(row, list) for row in board):
+            raise TypeError("Board must be a list of lists")
+        self.__board = board
+        self.__player = Player.HERO
+        self.__heroes = [Warrior(), Mage(), Paladin(), Ranger()]
         if villains == []:
-            self.__villains: List[Villain] = Dungeon.generate_villains()
+            self.__villains = self.generate_villains()
         else:
-            self.__villains: List[Villain] = villains
+            if not isinstance(villains, list):
+                raise TypeError("Villains must be a list")
+            if not all(isinstance(villain, Villain) for villain in villains):
+                raise TypeError("All elements in the villains list must be instances of Villain")
+            self.__villains = villains
 
     @property
     def height(self) -> int:
         return self.__height
 
-    @height.setter
-    def height(self, height: int) -> None:
-        Dungeon.boardLength(height)
-        self.__height = height
-
     @property
     def width(self) -> int:
         return self.__width
-
-    @width.setter
-    def width(self, width: int) -> None:
-        Dungeon.boardLength(width)
-        self.__width = width
 
     @property
     def board(self) -> List[List[None | Character]]:
         return self.__board
 
     @board.setter
-    def board(self, board: List[List[None | Character]]) -> None:
-        if type(board) != List[List[None | Character]]:
-            raise TypeError
+    def board(self, board):
         self.__board = board
 
     @property
     def player(self) -> Player:
         return self.__player
-
-    @player.setter
-    def player(self, player: Player) -> None:
-        if type(player) != Player:
-            raise TypeError
-        self.__player = player
 
     @property
     def heroes(self) -> List[Hero]:
@@ -67,8 +57,8 @@ class Dungeon:
 
     @heroes.setter
     def heroes(self, heroes: List[Hero]) -> None:
-        if type(heroes) != List[Hero]:
-            raise TypeError
+        if not isinstance(heroes, list) or not all(isinstance(hero, Hero) for hero in heroes):
+            raise TypeError("Expected a list of heroes")
         self.__heroes = heroes
 
     @property
@@ -77,15 +67,25 @@ class Dungeon:
 
     @villains.setter
     def villains(self, villains: List[Villain]) -> None:
-        if type(villains) != List[Villain]:
+        if not isinstance(villains, list):
             raise TypeError
         self.__villains = villains
 
     def is_valid_move(self, coords: List[Coord]) -> bool:
-        return self.board[coords[0]][coords[1]].is_valid_attack(coords[0], coords[1], self.board)
+        from_coord, to_coord = coords[0], coords[1]
+        character = self.board[from_coord.y][from_coord.x]
+        if character is None:
+            raise ValueError(f"No character at {from_coord}")
 
+        if self.board[to_coord.y][to_coord.x] is not None:
+            raise ValueError(f"Cannot move to {to_coord} as it is already occupied by another character.")
+
+        return character.is_valid_move(from_coord, to_coord, self.board)
     def is_valid_attack(self, coords: List[Coord]) -> bool:
-        return self.board[coords[0]][coords[1]].is_valid_attack(coords[0], coords[1], self.board)
+        character = self.board[coords.x][coords.y]
+        if character is None:
+            raise ValueError(f"No character at {coords}")
+        return character.is_valid_attack(coords.x, coords.y, self.board)
 
     def character_at(self, x: int, y: int) -> Character:
         # Check the coordinates
@@ -110,7 +110,12 @@ class Dungeon:
         if y < 0 or y >= self.__width:
             raise IndexError(f"y {y} is out of bounds.")
 
-        # Place character
+        # Check if the target position is already occupied
+        if self.__board[x][y] is not None:
+            raise ValueError(
+                f"Cannot place character at ({x}, {y}) because it is already occupied by {self.__board[x][y]}.")
+
+        # Place character at the specified coordinates
         self.__board[x][y] = target
 
     def move(self, from_coord: Coord, to_coord: Coord) -> None:
@@ -120,10 +125,14 @@ class Dungeon:
         if not (0 <= to_coord.x < self.__height and 0 <= to_coord.y < self.__width):
             raise IndexError(f"to coord ({to_coord.x}, {to_coord.y}) is out of bounds.")
 
-        # Check if a character is there
+        # Check if a character is at the from_coord
         character = self.__board[from_coord.x][from_coord.y]
         if character is None:
             raise ValueError(f"No character at from coord ({from_coord.x}, {from_coord.y}) to move.")
+
+        # Check if the move is valid
+        if not self.is_valid_move([from_coord, to_coord]):
+            raise ValueError(f"Invalid move for {character} from {from_coord} to {to_coord}.")
 
         # Move the character
         self.__board[to_coord.x][to_coord.y] = character
@@ -198,22 +207,24 @@ class Dungeon:
         return True
 
     def generate_villains(self) -> None:
-        num_villains = random.randint(1, max(self.height, self.width))
+        high = max(self.height, self.width)
+        num_villains = random.randint(1, high)
         self.__villains = []  # Reset the villains list
         necromancer_added = False  # necromancer tracker
 
         for i in range(num_villains):
             roll = random.randint(1, 10)
             if 1 <= roll <= 5:  # 50% chance for Goblin
-                self.__villains.append("Goblin")
+                self.__villains.append(Goblin())
             elif 6 <= roll <= 8:  # 30% chance for Skeleton
-                self.__villains.append("Skeleton")
+                self.__villains.append(Skeleton())
             elif 9 <= roll <= 10:  # 20% chance for Necromancer
-                if necromancer_added:
-                    self.__villains.append("Skeleton")  # Add a Skeleton instead
+                if necromancer_added == False:
+                    self.__villains.append(Necromancer())
+                    necromancer_added = True # Show that a necromanser has been added
                 else:
-                    self.__villains.append("Necromancer")
-                    necromancer_added = True  # Show that a necromanser has been added
+                    self.__villains.append(Skeleton())  # Add a Skeleton instead
+
 
     def place_heroes(self) -> None:
         mid = self.__width // 2  # Calculate middle
@@ -254,10 +265,6 @@ class Dungeon:
             height = random.randint(4, 12)
             width = random.randint(4, 12)
 
-        # Set height and width
-        self.height = height
-        self.width = width
-
         # Reset the board
         self.__board = [[None for i in range(self.__width)] for i in range(self.__height)]
 
@@ -269,3 +276,23 @@ class Dungeon:
 
         # Place villains
         self.place_villains()
+
+
+# d = Dungeon(5,7)
+# d.generate_new_board()
+# # print(d.villains)
+# # print(d.heroes)
+# print(d.print_board())
+#
+#
+#
+# # from_coord = Coord(3, 3)
+# # to_coord = Coord(2, 3)
+# # d.move(from_coord, to_coord)
+
+# print(d.is_dungeon_clear())
+# print(d.adventurer_defeat())
+# d.set_character_at(Skeleton(), 3, 2)
+# print(d.print_board())
+# print(d.character_at(3, 3))
+# print(d.character_at(3, 2))

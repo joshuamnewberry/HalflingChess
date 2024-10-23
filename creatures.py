@@ -8,7 +8,7 @@ class Villain(Character):
         Parameters:
         None
 
-        Returns:
+        Return:
         None
 
         """
@@ -37,7 +37,7 @@ class Villain(Character):
                         if board[from_coord.x][y] != None:
                             return False
                     return True
-                elif from_coord.y == to_coord.y:
+                if from_coord.y == to_coord.y:
                     for x in range (min(from_coord.x, to_coord.x) + 1, max(from_coord.x, to_coord.x)):
                         if board[x][from_coord.y] != None:
                             return False
@@ -65,7 +65,7 @@ class Villain(Character):
     
     def calculate_dice(self, target:Character, attack:bool = True, lst:list = None, *args, **kwargs) -> int:
         """
-        Returns the number of successful rolls using lst:list or generating a list of random rolls from 1 to 6
+        Return the number of successful rolls using lst:list or generating a list of random rolls from 1 to 6
 
         Parameters:
         target:Character the Character self is in combat with
@@ -100,7 +100,7 @@ class Goblin(Villain):
         Parameters:
         None
 
-        Returns:
+        Return:
         None
 
         """
@@ -117,7 +117,7 @@ class Skeleton(Villain):
         Parameters:
         None
 
-        Returns:
+        Return:
         None
 
         """
@@ -135,7 +135,7 @@ class Necromancer(Villain):
         Parameters:
         None
 
-        Returns:
+        Return:
         None
 
         """
@@ -153,7 +153,7 @@ class Necromancer(Villain):
         to_coord:Coord the coordinates of the final position of the character
         board:List[List[None|Character]] the 2D list of the current board containing either None or Character in each slot
 
-        Returns:
+        Return:
         None
 
         """
@@ -165,12 +165,12 @@ class Necromancer(Villain):
 class Hero(Character):
     def __init__(self) -> None:
         """
-        Initialize the object with Player type Player.VILLAIN
+        Initialize the object with Player type Player.HERO
 
         Parameters:
         None
 
-        Returns:
+        Return:
         None
 
         """
@@ -217,7 +217,7 @@ class Hero(Character):
     
     def calculate_dice(self, target:Character, attack:bool = True, lst:list = None, *args, **kwargs) -> int:
         """
-        Returns the number of successful rolls using lst:list or generating a list of random rolls from 1 to 6
+        Return the number of successful rolls using lst:list or generating a list of random rolls from 1 to 6
 
         Parameters:
         target:Character the Character self is in combat with
@@ -252,7 +252,7 @@ class Warrior(Hero):
         Parameters:
         None
 
-        Returns:
+        Return:
         None
 
         """
@@ -263,7 +263,7 @@ class Warrior(Hero):
     
     def calculate_dice(self, target:Character, attack:bool = True, lst:list = None, gob:list = None) -> int:
         """
-        Returns the number of successful rolls using lst:list or generating a list of random rolls from 1 to 6, also uses gob to roll 2 extra dice when
+        Return the number of successful rolls using lst:list or generating a list of random rolls from 1 to 6, also uses gob to roll 2 extra dice when
         attacking a goblin, or if empty generates 2 more rolls
 
         Parameters:
@@ -295,7 +295,7 @@ class Mage(Hero):
         Parameters:
         None
 
-        Returns:
+        Return:
         None
 
         """
@@ -326,7 +326,7 @@ class Paladin(Hero):
         Parameters:
         None
 
-        Returns:
+        Return:
         None
 
         """
@@ -364,7 +364,7 @@ class Paladin(Hero):
         to_coord:Coord the coordinates of the final position of the character
         board:List[List[None|Character]] the 2D list of the current board containing either None or Character in each slot
 
-        Returns:
+        Return:
         None
 
         """
@@ -381,7 +381,7 @@ class Ranger(Hero):
         Parameters:
         None
 
-        Returns:
+        Return:
         None
 
         """

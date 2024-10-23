@@ -335,7 +335,7 @@ class Character(ABC):
     @abstractmethod
     def calculate_dice(self, target:Character, attack:bool = True, lst:list = None, *args, **kwargs) -> int:
         """
-        Returns the number of successful rolls using lst:list or generating a list of random rolls from 1 to 6
+        Return the number of successful rolls using lst:list or generating a list of random rolls from 1 to 6
 
         Parameters:
         target:Character the Character self is in combat with
